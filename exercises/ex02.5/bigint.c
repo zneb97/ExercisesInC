@@ -1,4 +1,9 @@
-/* Example code for Exercises in C.
+/* 
+Ben Ziemann
+Hw 2.5
+Implementation of Bigint
+
+Example code for Exercises in C.
 
 This program shows a way to represent a BigInt type (arbitrary length integers)
 using C strings, with numbers represents as a string of decimal digits in reverse order.
@@ -25,6 +30,7 @@ Follow these steps to get this program working:
 #include <ctype.h>
 #include <assert.h>
 
+
 /* reverse_string: Returns a new string with the characters reversed.
 
 It is the caller's responsibility to free the result.
@@ -33,9 +39,22 @@ s: string
 returns: string
 */
 char *reverse_string(char *s) {
-    //TODO: Fill this in.
-    return "";
+    int len;
+    len = strlen(s);
+    int i;
+    int j;
+    i = 0;
+    char *rev =(char *)malloc(sizeof(char)*len);
+
+    //Use moving indexes to reverse string
+    for(j=len-1; j>=0; j--){
+      rev[j] = s[i];
+      i++;
+    }
+
+    return rev;
 }
+
 
 /* ctoi: Converts a character to integer.
 
@@ -47,19 +66,23 @@ int ctoi(char c) {
     return c - '0';
 }
 
+
 /* itoc: Converts an integer to character.
 
 i: integer 0 to 9
 returns: character '0' to '9'
 */
 char itoc(int i) {
-    //TODO: Fill this in, with an appropriate assertion.
-    return '0';
+    //Zero acts as the offeset value from the straight ASCII value of i (1=some header) to the ASCII value
+    //corresponding to the decimal interger (1+0(ASCII value of 48) = 49 (the ASCII value of 1))
+    char myIntStr = i+'0'; 
+    return myIntStr;
 }
+
 
 /* add_digits: Adds two decimal digits, returns the total and carry.
 
-For example, if a='5', b='6', and carry='1', the sum is 12, so
+For example, if a='5', b='6', and c='1', the sum is 12, so
 the output value of total should be '2' and carry should be '1'
 
 a: character '0' to '9'
@@ -70,8 +93,26 @@ carry: pointer to char
 
 */
 void add_digits(char a, char b, char c, char *total, char *carry) {
-    //TODO: Fill this in.
+    //Convert char to int for each to be summed
+    int i1 = ctoi(a);
+    int i2 = ctoi(b);
+    int i3 = ctoi(c);
+    int sum = i1+i2+i3;
+
+    //Carry over needed
+    if(sum>=10){
+        sum -= 10;
+        *total = itoc(sum);
+        *carry = '1';
+        return;
+    }
+
+    //Carry over not needed
+    *total = itoc(sum);
+    *carry = '0';
+
 }
+
 
 /* Define a type to represent a BigInt.
    Internally, a BigInt is a string of digits, with the digits in
@@ -205,6 +246,6 @@ int main (int argc, char *argv[])
 
     //TODO: When you have the first three functions working,
     //      uncomment the following, and it should work.
-    // test_add_bigint();
+    test_add_bigint();
     return 0;
 }
