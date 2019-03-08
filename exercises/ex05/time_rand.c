@@ -4,6 +4,14 @@ Copyright 2016 Allen B. Downey
 License: MIT License https://opensource.org/licenses/MIT
 */
 
+/* Random float is the fastest for the initial run. This correlates with Allan's paper, with
+* his algorithim being slightly slower but still comparable while having the benefits discussed
+*
+* Random double is slower
+*
+*/
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -76,4 +84,10 @@ main(int argc, char *argv[])
 
     time = time_func(iters, random_float);
     printf("%f ms \t random_float\n", time);
+
+    time = time_func(iters, random_double);  
+    printf("%f ms \t random_double\n", time);
+
+    time = time_func(iters, my_random_double);  
+    printf("%f ms \t my_random_double\n", time);
 }

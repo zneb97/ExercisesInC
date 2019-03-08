@@ -3,6 +3,7 @@
     Copyright 2016 Allen B. Downey
     License: MIT License https://opensource.org/licenses/MIT
 */
+#include "rand.c"
 
 float my_random_float();
   

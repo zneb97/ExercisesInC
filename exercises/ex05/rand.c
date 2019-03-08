@@ -76,9 +76,44 @@ float my_random_float2()
 }
 
 // compute a random double using my algorithm
+//Copied from Allan's code and adapted for 64 bit doubles
 double my_random_double()
 {
-    // TODO: fill this in
+
+    union {
+        double d;
+        int i;
+    } b;
+
+    int x; 
+    int mantissa;
+    int exp = 1022; //Eponent is 11 bits, 2^11 = 2048 -> -1023 to 1022 in 2's Comp
+    int mask = 1;
+
+    //Flip a coin until we set the first set bit
+    while (1) {
+        x = random(); //32 bits
+        x = ((x<<32) | x); //Build out the rest of the 64 bit double by shifting over for 32 more bits
+        if (x == 0) {
+            exp -= 31;
+        } else {
+            break;
+        }
+    }
+
+    // find the location of the first set bit and compute the exponent
+    while (x & mask) {
+        mask <<= 1;
+        exp--;
+    }
+
+    // use the remaining bit as the mantissa
+    mantissa = x >> 11; //Jump the exponent
+    b.i = (exp << 52) | mantissa; //Pick up the remaining bits (52(mantissa_+11(Exponent)+1(Sign) = 64 bits))
+
+    return b.d;
+
+
 }
 
 // return a constant (this is a dummy function for time trials)
