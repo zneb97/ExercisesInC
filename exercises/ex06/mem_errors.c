@@ -29,16 +29,25 @@ int main()
     int *array2 = malloc(100 * sizeof (int));
 
     // valgrind does not bounds-check static arrays
-    read_element(array1, -1);
-    read_element(array1, 100);
+    //Original:
+    // read_element(array1, -1);
+    // read_element(array1, 100);
+    //My Fix (change the index you're reading from to be in bounds:
+    read_element(array1, 0);
+    read_element(array1, 99);
 
     // but it does bounds-check dynamic arrays
-    read_element(array2, -1);
-    read_element(array2, 100);
+    //Original:
+    // read_element(array2, -1);
+    // read_element(array2, 100);
+    //My fix (change the indexs you're reading from to be in bounds)
+    read_element(array1, 0);
+    read_element(array1, 99);
 
     // and it catches use after free
     free(use_after_free);
-    *use_after_free = 17;
+    //Just don't use it a gain OR malloc it again  after
+    //Don't do this *use_after_free = 17; before doing this again *use_after_free = malloc(sizeof (int));
 
     // never_free is definitely lost
     *never_free = 17;
@@ -47,10 +56,13 @@ int main()
     // free(&never_allocated);
 
     // but this one doesn't
-    free_anything(&never_allocated);
+    //Don't try to free things that weren't allocated in the first place - that's a paddlin'
+    //free_anything(&never_allocated);
 
+
+    //Fix: only free things once
     free(free_twice);
-    free(free_twice);
+    //free(free_twice);
 
     return 0;
 }
