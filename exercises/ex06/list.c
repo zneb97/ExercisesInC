@@ -150,7 +150,7 @@ void reverse(Node **list) {
       curr->next = end;
     }
 
-    //Reassign head
+    //Point list to new beginning node
     *list = curr;
 }
 
