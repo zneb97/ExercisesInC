@@ -54,8 +54,14 @@ void print_list(Node **list) {
 * returns: int or -1 if the list is empty
 */
 int pop(Node **list) {
-    // FILL THIS IN!
-    return 0;
+    Node *curr = *list;
+    if (curr==NULL){
+        return -1;
+    }
+    *list = curr->next;
+    int val = curr->val;
+    free(curr);
+    return val;
 }
 
 
@@ -65,7 +71,23 @@ int pop(Node **list) {
 * val: value to add
 */
 void push(Node **list, int val) {
-    // FILL THIS IN!
+    Node *curr = *list;
+
+    //Handle empty list
+    if(curr == NULL){
+        *list = make_node(val, NULL);
+        return;
+    }
+
+    //Get last node
+    while(1){
+        if (curr->next == NULL){
+            break;
+        }
+        curr = curr->next;
+    }
+
+    curr->next = make_node(val, NULL);
 }
 
 
@@ -79,8 +101,25 @@ void push(Node **list, int val) {
 * returns: number of nodes removed
 */
 int remove_by_value(Node **list, int val) {
-    // FILL THIS IN!
-    return 0;
+    Node *curr = *list;
+    Node *curr_prev = NULL;
+
+    //Get last node
+    while(1){
+        if (curr->val == val){
+            break;
+        }
+        if(curr->next == NULL){
+            return 0;
+        }
+        curr_prev = curr;
+        curr = curr->next;
+    }
+
+    curr_prev->next = curr->next;
+    free(curr);
+
+    return 1;
 }
 
 
@@ -91,17 +130,40 @@ int remove_by_value(Node **list, int val) {
 * list: pointer to pointer to Node
 */
 void reverse(Node **list) {
-    // FILL THIS IN!
+    
+    Node* end = *list;
+    //Handle Emtpy and 1 Element list
+    if((end == NULL)|(end->next == NULL)){
+      return;
+    }
+
+    //Setup "end" of list
+    Node *curr = end->next;
+    Node *new = curr->next;
+    curr->next = end;
+    end->next = NULL;
+
+    while(new != NULL){
+      end = curr;
+      curr = new;
+      new = new->next;
+      curr->next = end;
+    }
+
+    //Reassign head
+    *list = curr;
 }
+
 
 
 int main() {
     Node *head = make_node(1, NULL);
-    head->next = make_node(2, NULL);
-    head->next->next = make_node(3, NULL);
-    head->next->next->next = make_node(4, NULL);
+    // head->next = make_node(2, NULL);
+    // head->next->next = make_node(3, NULL);
+    // head->next->next->next = make_node(4, NULL);
 
     Node **list = &head;
+
     print_list(list);
 
     int retval = pop(list);
