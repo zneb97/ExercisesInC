@@ -1,4 +1,4 @@
-/* Example code for Exercises in C.
+ /* Example code for Exercises in C.
 
 Copyright 2016 Allen Downey
 License: Creative Commons Attribution-ShareAlike 3.0
@@ -178,7 +178,13 @@ int hash_hashable(Hashable *hashable)
 */
 int equal_int (void *ip, void *jp)
 {
-    // FILL THIS IN!
+    int a = *(int *) ip;
+    int b = *(int *) jp;
+
+    if(a==b){
+        return 1;
+    }
+
     return 0;
 }
 
@@ -192,7 +198,13 @@ int equal_int (void *ip, void *jp)
 */
 int equal_string (void *s1, void *s2)
 {
-    // FILL THIS IN!
+    char *a = (char *) s1;
+    char *b = (char *) s2;
+
+    if(strcmp(a,b)==0){
+        return 1;
+    }
+
     return 0;
 }
 
@@ -207,7 +219,14 @@ int equal_string (void *s1, void *s2)
 */
 int equal_hashable(Hashable *h1, Hashable *h2)
 {
-    // FILL THIS IN!
+    //Hopefully the hash function is decent and no collisions
+    int hash1 = hash_hashable(h1);
+    int hash2 = hash_hashable(h2);
+
+    if(hash1 == hash2){
+        return 1;
+    }
+
     return 0;
 }
 
@@ -296,7 +315,20 @@ Node *prepend(Hashable *key, Value *value, Node *rest)
 /* Looks up a key and returns the corresponding value, or NULL */
 Value *list_lookup(Node *list, Hashable *key)
 {
-    // FILL THIS IN!
+    //Make sure there's something there
+    if(list == NULL){
+        return NULL;
+    }
+
+    //Move through list
+    while(list != NULL){
+        if(equal_hashable(key, list->key)){
+            return list->value;
+        }
+        list = list->next;
+    }
+
+    //Reached end of list
     return NULL;
 }
 
@@ -341,15 +373,29 @@ void print_map(Map *map)
 /* Adds a key-value pair to a map. */
 void map_add(Map *map, Hashable *key, Value *value)
 {
-    // FILL THIS IN!
+    int bin = hash_hashable(key) % map->n;
+
+    //Empty list case
+    if(map->lists[bin] == NULL){
+        Node *myNode = make_node(key, value, NULL);
+        map->lists[bin] = myNode;
+
+    }
+
+    //Existing list case
+    else{
+        Node *myNode = prepend(key, value, map->lists[bin]);
+        map->lists[bin] = myNode;
+    }
+
 }
 
 
 /* Looks up a key and returns the corresponding value, or NULL. */
 Value *map_lookup(Map *map, Hashable *key)
 {
-    // FILL THIS IN!
-    return NULL;
+    int bin = hash_hashable(key) % map->n;
+    return list_lookup(map->lists[bin], key);
 }
 
 
@@ -373,7 +419,7 @@ int main ()
     Node *node1 = make_node(hashable1, value1, NULL);
     print_node (node1);
 
-    Value *value2 = make_string_value ("Orange");
+    Value *value2 = make_string_value ("Jabberwock");
     Node *list = prepend(hashable2, value2, node1);
     print_list (list);
 
