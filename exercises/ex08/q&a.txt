@@ -1,0 +1,15 @@
+#1) Where is GLib from and why does it exist? Who uses it, and for what? Would it have been better if they had given it a name less likely to be confused with glibc?
+
+Glib is an implementation of several libraries that allow for the usage of the implementation of existing and efficent data structures in C, ranigng from basic linked list to more advancted structures like N-trees.
+
+Changing the name would have been a good idea as the existance of glibc covers the "core" libraries and many would consider the data structures included in glib to be core.
+
+
+#2) What are the most important pros and cons of using GLib, as opposed to another library, or just using core C features?
+
+The pros are that you don't have re-implement existing data structures, as well as having access to several other libraries (kind of the point of libraries in genral). Cons are as with any library, you need to learn how to use it. The libraries are also rather large and would be troublesome for getting it 
+
+
+#3) What do you have to do to compile and run a "Hello GLib" example?
+
+Use the flags `pkg-config --cflags --libs glib-2.0` to let the compiler know where to find glib.
