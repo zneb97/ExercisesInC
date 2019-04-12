@@ -38,15 +38,51 @@ int main(int argc, char *argv[])
     int num_feeds = 5;
     char *search_phrase = argv[1];
     char var[255];
+    pid_t pid;
+    int status;
+    int i;
 
-    for (int i=0; i<num_feeds; i++) {
+    for (i=0; i<num_feeds; i++) {
+
+        printf("Creating child %d.\n", i);
         sprintf(var, "RSS_FEED=%s", feeds[i]);
         char *vars[] = {var, NULL};
+        pid = fork();
 
-        int res = execle(PYTHON, PYTHON, SCRIPT, search_phrase, NULL, vars);
-        if (res == -1) {
-            error("Can't run script.");
+        /* check for an error */
+        if (pid == -1) {
+            fprintf(stderr, "fork failed: %s\n", strerror(errno));
+            perror(argv[0]);
+            exit(1);
+        }
+
+        /* see if we're the parent or the child */
+        if (pid == 0) {
+            //This is the main problem with the original. When the python script ends,
+            //so too does this one. We get around this by having it kill off the child processes
+            // allowing all articles to be read
+            int res = execle(PYTHON, PYTHON, SCRIPT, search_phrase, NULL, vars);
+            if (res == -1) {
+                error("Can't run script.");
+            }
         }
     }
+
+
+    for (i=0; i<num_feeds; i++) {
+        pid = wait(&status);
+
+        if (pid == -1) {
+            fprintf(stderr, "wait failed: %s\n", strerror(errno));
+            perror(argv[0]);
+            exit(1);
+        }
+
+        // check the exit status of the child
+        status = WEXITSTATUS(status);
+        printf("Child %d exited with error code %d.\n", pid, status);
+    }
+
+
     return 0;
 }
