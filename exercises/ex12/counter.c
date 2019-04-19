@@ -5,11 +5,22 @@ License: GNU GPLv3
 
 */
 
+
+
+/*
+* #1 Is the final value of the counter correct?
+* The final counter value is correct however the individual steps of the counter are not because they are running concurrently
+*
+* #2 Do you see evidence that the threads are running concurrently? Do any synchronization errors occur?
+* Yes. This is evidenced in the fact that although the final counter is correct, the individual counter is not. By reading the current value
+* when it is still at 0 (or behind where it should be) due to threads accessing it out of order, the counter displays out of order results.
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
 
-#define NUM_CHILDREN 5
+#define NUM_CHILDREN 9
 
 /* Print an error message and exit.
 */
