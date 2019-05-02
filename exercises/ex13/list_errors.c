@@ -178,6 +178,18 @@ Node *make_something() {
     return node3;
 }
 
+void free_list(Node **head){
+
+    Node *node = *head;
+
+    while(node != NULL){
+        Node *nx = node->next;
+        free(node);
+        node = nx;
+    }
+    return;
+}
+
 
 int main() {
     // make a list of even numbers
@@ -207,7 +219,13 @@ int main() {
     print_list(&empty);
 
     Node *something = make_something();
-    free(something);
+
+    //Originally wasn't freeing each node in the list
+    //It also wasn't freeing all lists it allocated for
+    //free(something);
+    free_list(&empty);
+    free_list(&test_list);
+    free_list(&something);
 
     return 0;
 }
